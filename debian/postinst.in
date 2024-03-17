@@ -1,0 +1,14 @@
+#! /bin/sh
+set -e
+
+update-alternatives --install %INSTALL_DIR%/lib/librindowmatlib.so \
+                    librindowmatlib.so \
+                    %INSTALL_DIR%/lib/rindowmatlib-serial/librindowmatlib.so 90
+
+update-alternatives --install %INSTALL_DIR%/lib/librindowmatlib.so \
+                    librindowmatlib.so \
+                    %INSTALL_DIR%/lib/rindowmatlib-openmp/librindowmatlib.so 95
+
+
+
+exit 0

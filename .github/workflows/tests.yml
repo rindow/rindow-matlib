@@ -1,0 +1,24 @@
+name: tests
+
+on: 
+    push:
+        branches:
+            - main
+
+jobs:
+  build_and_tests:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: true
+  
+    steps:
+      - name: Checkout codes
+        uses: "actions/checkout@v4"
+
+      - name: Build
+        run: cmake -S . -B build && cmake --build build --config Release
+
+      - name: GoogleTest Tests
+        run: cd build && ctest
+

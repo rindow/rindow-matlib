@@ -1,0 +1,10 @@
+Rindow Math Matrix is the fundamental package for scientific matrix operation
+
+- A powerful N-dimensional array object
+- Sophisticated (broadcasting) functions
+- A high-speed calculation library written in C.
+- Useful linear algebra and random number capabilities
+- Parallel calculation with OpenMP
+
+You can call a high-speed calculation library written in C language to speed up matrix calculation processing.
+Rindow Matlib includes many matrix operations functions used in machine learning.
