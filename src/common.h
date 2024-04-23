@@ -6,9 +6,12 @@
 #include <stdint.h>
 
 #ifdef _MSC_VER
-#include <windows.h>
+#include <windows.h> // For Windows
+#elif defined(__APPLE__)
+#include <sys/sysctl.h> // For macOS
+#include <mach/mach.h> // For macOS
 #else
-#include <sys/sysinfo.h>
+#include <sys/sysinfo.h> // For Linux and other Unix-like systems
 #endif
 #ifdef _OPENMP
 #include <omp.h>
@@ -16,12 +19,15 @@
 
 #include <stdlib.h>
 #ifndef _OPENMP
-    #ifdef _MSC_VER
-      #include <sysinfoapi.h>
-    #else
-      #include <sys/sysinfo.h>
-      #include <pthread.h>
-    #endif
+  #ifdef _MSC_VER
+    #include <sysinfoapi.h>  // Include Windows-specific header for system information
+  #elif defined(__APPLE__)
+    #include <sys/sysctl.h>  // Include sysctl.h for system information
+    #include <pthread.h>     // Include pthread.h for POSIX threads
+  #else
+    #include <sys/sysinfo.h>  // Include sysinfo.h for system information (Linux)
+    #include <pthread.h>      // Include pthread.h for POSIX threads
+  #endif
     #include <memory.h>
 #endif
 
