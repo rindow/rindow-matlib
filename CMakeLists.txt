@@ -19,7 +19,7 @@ add_subdirectory(./src)
 add_subdirectory(./include)
 add_subdirectory(./tests)
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
     add_subdirectory(./debian)
 endif()
 

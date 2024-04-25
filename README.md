@@ -11,17 +11,19 @@ Rindow Math Matrix is the fundamental package for scientific matrix operation
 You can call a high-speed calculation library written in C language to speed up matrix calculation processing.
 Rindow Matlib includes many matrix operations functions used in machine learning.
 
-Please see the documents about rindow mathematics on [Rindow Mathematics](https://rindow.github.io/mathematics/openblas/mathlibrary.html) web pages.
+Please see the documents about rindow mathematics
+on [Rindow Mathematics](https://rindow.github.io/mathematics/openblas/mathlibrary.html) web pages.
 
 Requirements
 ============
-- Windows 10 or later, Linux(Ubuntu 20.04 or later)
 
+- Windows 10 or later, Linux(Ubuntu 20.04 or later)
 
 How to setup pre-build binaries
 ===============================
 
 ### How to setup for Windows
+
 Download the pre-build binary file.
 
 - https://github.com/rindow/rindow-matlib/releases
@@ -33,11 +35,12 @@ C> PATH %PATH%;C:\path\to\bin
 ```
 
 ### How to setup for Ubuntu
+
 Download the pre-build binary file.
 
 - https://github.com/rindow/rindow-matlib/releases
 
-Please install using the apt command. 
+Please install using the apt command.
 
 ```shell
 $ sudo apt install ./rindow-matlib_X.X.X_amd64.deb
@@ -58,11 +61,37 @@ There are 2 choices for the alternative librindowmatlib.so (providing /usr/lib/l
 Press <enter> to keep the current choice[*], or type selection number: 2
 ```
 
+### How to setup for MacOS
+
+Download the pre-build binary file.
+
+- https://github.com/rindow/rindow-matlib/releases
+
+Extract the tar.gz file to the tmp directory and navigate to the directory.
+
+```shell
+$ tar -xzf rindow-matlib-X.X.X-Darwin.tar.gz -C /tmp
+$ cd /tmp/rindow-matlib-X.X.X-Darwin
+```
+
+Next, copy the include and lib directories to /usr/local.
+
+```shell
+$ sudo cp -r usr/include /usr/local/
+$ sudo cp -r usr/lib /usr/local/
+```
+
+Depending on whether you are using OpenMP or not, you need to set the symbolic link.
+
+```shell
+$ sudo ln -s /usr/local/lib/rindowmatlib-openmp/librindowmatlib.dylib /usr/local/lib/librindowmatlib.dylib
+```
+
 How to build from source code on Windows
 ========================================
 You can also build and use from source code.
 
-### download source code
+### Download source code
 
 Download source code from release and unzip
 
@@ -81,6 +110,7 @@ C> ctest -C Release
 C> cpack -C Release
 C> cd ..\packages
 ```
+
 Unzip the package file from packages directory.
 
 ```shell
@@ -91,7 +121,7 @@ How to build from source code on Ubuntu
 =======================================
 You can also build and use from source code.
 
-### download source code
+### Download source code
 
 Download source code from release and extract
 
@@ -108,7 +138,8 @@ $ cmake --build build --config Release
 $ (cd build; ctest -C Release)
 $ (cd build; cpack -C Release)
 ```
-Install with apt commnand.
+
+Install with apt command.
 
 ```shell
 $ sudo apt install ./packages/rindow-matlib_X.X.X_amd64.deb
@@ -129,10 +160,34 @@ There are 2 choices for the alternative librindowmatlib.so (providing /usr/lib/l
 Press <enter> to keep the current choice[*], or type selection number: 2
 ```
 
+How to build from source code on MacOS
+=======================================
+
+You can also build and use from source code.
+
+### Download source code
+
+Download source code from release and extract
+
+- https://github.com/rindow/rindow-matlib/releases
+
+### Build and Install on MacOS
+
+Build with cmake.
+
+```shell
+$ cd \path\to\here
+$ cmake -S . -B build
+$ cmake --build build --config Release
+$ (cd build; ctest -C Release)
+$ (cd build; cpack -C Release)
+```
+
 How to use
 ==========
 
 ### sample program
+
 ```cpp
 #include <iostream>
 #include <string>
@@ -199,10 +254,20 @@ int main(int ac, char **av)
 }
 ```
 
-### build the sample program on Windows.
+### Build the sample program on Windows.
 
+```shell
 C> cl /EHsc -I.\path\to\include sample.cpp \path\to\lib\rindowmatlib.lib
+```
 
-### build the sample program on Ubuntu.
+### Build the sample program on Ubuntu.
 
+```shell
 $ g++ sample.cpp -lrindowmatlib -lm
+```
+
+### Build the sample program on MacOS.
+
+```shell
+$ g++ sample.cpp -lrindowmatlib -lm
+```
