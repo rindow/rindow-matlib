@@ -11,13 +11,13 @@ Rindow Math Matrix is the fundamental package for scientific matrix operation
 You can call a high-speed calculation library written in C language to speed up matrix calculation processing.
 Rindow Matlib includes many matrix operations functions used in machine learning.
 
-Please see the documents about rindow mathematics
+Please see the documents about rindow mathematics 
 on [Rindow Mathematics](https://rindow.github.io/mathematics/openblas/mathlibrary.html) web pages.
 
 Requirements
 ============
 
-- Windows 10 or later, Linux(Ubuntu 20.04 or later)
+- Windows 10/11 , Linux(Ubuntu 20.04, Debian 12), MacOS or later
 
 How to setup pre-build binaries
 ===============================
@@ -34,19 +34,41 @@ Unzip the file for Windows and copy rindowmatlib.dll to the directory set in PAT
 C> PATH %PATH%;C:\path\to\bin
 ```
 
-### How to setup for Ubuntu
+### How to setup for Linux
 
 Download the pre-build binary file.
 
 - https://github.com/rindow/rindow-matlib/releases
 
-Please install using the apt command.
-
+Please install using the apt command. 
 ```shell
 $ sudo apt install ./rindow-matlib_X.X.X_amd64.deb
 ```
 
-If you use this library under the PHP, you must set it to "serial" mode.
+### Troubleshooting for Linux
+Since rindow-matlib currently uses OpenMP, choose the OpenMP version for OpenBLAS as well.
+
+Using the pthread version of OpenBLAS can cause conflicts and become unstable and slow.
+This issue does not occur on Windows.
+
+If you have already installed the pthread version of OpenBLAS,
+```shell
+$ sudo apt install libopenblas0-openmp liblapacke
+$ sudo apt remove libopenblas0-pthread
+```
+
+But if you can't remove it, you can switch to it using the update-alternatives command.
+
+```shell
+$ sudo update-alternatives --config libopenblas.so.0-x86_64-linux-gnu
+$ sudo update-alternatives --config liblapack.so.3-x86_64-linux-gnu
+```
+
+If you really want to use the pthread version of OpenBLAS, please switch to the serial version of rindow-matlib.
+
+There are no operational mode conflicts with OpenBLAS on Windows.
+
+But, If you really want to use the pthread version of OpenBLAS, please switch to the serial version of rindow-matlib.
 
 ```shell
 $ sudo update-alternatives --config librindowmatlib.so
@@ -60,6 +82,7 @@ There are 2 choices for the alternative librindowmatlib.so (providing /usr/lib/l
 
 Press <enter> to keep the current choice[*], or type selection number: 2
 ```
+Choose the "rindowmatlib-serial".
 
 ### How to setup for MacOS
 
@@ -117,7 +140,7 @@ Unzip the package file from packages directory.
 C> PATH %PATH%;C:\path\to\bin
 ```
 
-How to build from source code on Ubuntu
+How to build from source code on Linux
 =======================================
 You can also build and use from source code.
 
@@ -127,7 +150,7 @@ Download source code from release and extract
 
 - https://github.com/rindow/rindow-matlib/releases
 
-### Build and Install on Ubuntu
+### Build and Install on Linux
 
 Build with cmake.
 
@@ -143,21 +166,6 @@ Install with apt command.
 
 ```shell
 $ sudo apt install ./packages/rindow-matlib_X.X.X_amd64.deb
-```
-
-If you use this library under the PHP, you must set it to "serial" mode.
-
-```shell
-$ sudo update-alternatives --config librindowmatlib.so
-There are 2 choices for the alternative librindowmatlib.so (providing /usr/lib/librindowmatlib.so).
-
-  Selection    Path                                             Priority   Status
-------------------------------------------------------------
-* 0            /usr/lib/rindowmatlib-openmp/librindowmatlib.so   95        auto mode
-  1            /usr/lib/rindowmatlib-openmp/librindowmatlib.so   95        manual mode
-  2            /usr/lib/rindowmatlib-serial/librindowmatlib.so   90        manual mode
-
-Press <enter> to keep the current choice[*], or type selection number: 2
 ```
 
 How to build from source code on MacOS
@@ -260,7 +268,7 @@ int main(int ac, char **av)
 C> cl /EHsc -I.\path\to\include sample.cpp \path\to\lib\rindowmatlib.lib
 ```
 
-### Build the sample program on Ubuntu.
+### Build the sample program on Linux.
 
 ```shell
 $ g++ sample.cpp -lrindowmatlib -lm
@@ -271,3 +279,4 @@ $ g++ sample.cpp -lrindowmatlib -lm
 ```shell
 $ g++ sample.cpp -lrindowmatlib -lm
 ```
+
