@@ -181,7 +181,7 @@ Download source code from release and extract
 
 ### Build and Install on MacOS
 
-Build with cmake.
+Install openmp library with brew before build with cmake.
 
 ```shell
 $ cd \path\to\here
