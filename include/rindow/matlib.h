@@ -217,6 +217,8 @@ RINDOW_FUNC_DECL int32_t rindow_matlib_s_onehot(int32_t dtype, int32_t m, int32_
 RINDOW_FUNC_DECL int32_t rindow_matlib_d_onehot(int32_t dtype, int32_t m, int32_t n, void *x, int32_t incX, double alpha, double *a, int32_t ldA);
 RINDOW_FUNC_DECL void rindow_matlib_s_softmax(int32_t m, int32_t n, float *a, int32_t ldA);
 RINDOW_FUNC_DECL void rindow_matlib_d_softmax(int32_t m, int32_t n, double *a, int32_t ldA);
+RINDOW_FUNC_DECL void rindow_matlib_s_top_k(int32_t m, int32_t n, float *a, int32_t ldA, int32_t k, int32_t sorted, float *top_values, int32_t *top_indices);
+RINDOW_FUNC_DECL void rindow_matlib_d_top_k(int32_t m, int32_t n, double *a, int32_t ldA, int32_t k, int32_t sorted, double *top_values, int32_t *top_indices);
 RINDOW_FUNC_DECL void rindow_matlib_s_equal(int32_t n, float *x, int32_t incX, float *y, int32_t incY);
 RINDOW_FUNC_DECL void rindow_matlib_d_equal(int32_t n, double *x, int32_t incX, double *y, int32_t incY);
 RINDOW_FUNC_DECL void rindow_matlib_i_equal(int32_t dtype, int32_t n, void *x, int32_t incX, void *y, int32_t incY);
