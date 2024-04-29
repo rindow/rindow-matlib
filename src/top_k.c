@@ -116,7 +116,7 @@ void rindow_matlib_d_top_k(
         int32_t j;
         #pragma omp parallel for
         for (j = 0; j < m; j++) {
-            RINDOW_MATLIB_SORT_TOP_K(double, DoubleIndexPair, temp_array, j, k, top_values, top_indices, compare_double);
+            RINDOW_MATLIB_SORT_TOP_K(double, DoubleIndexPair, temp_sorted_array, j, k, top_values, top_indices, compare_double);
         }
 
         free(temp_sorted_array);
