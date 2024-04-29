@@ -46,13 +46,13 @@ typedef struct {
     int32_t index;
 } DoubleIndexPair;
 
-int compare_float(const void *a, const void *b) {
+static int compare_float(const void *a, const void *b) {
     const FloatIndexPair *pairA = (const FloatIndexPair *)a;
     const FloatIndexPair *pairB = (const FloatIndexPair *)b;
     return (pairB->value > pairA->value) - (pairB->value < pairA->value);
 }
 
-int compare_double(const void *a, const void *b) {
+static int compare_double(const void *a, const void *b) {
     const DoubleIndexPair *pairA = (const DoubleIndexPair *)a;
     const DoubleIndexPair *pairB = (const DoubleIndexPair *)b;
     return (pairB->value > pairA->value) - (pairB->value < pairA->value);
