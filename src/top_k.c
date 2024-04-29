@@ -66,8 +66,9 @@ void rindow_matlib_s_top_k(
 {
     FloatIndexPair *temp_array = (FloatIndexPair *)malloc(n * sizeof(FloatIndexPair));
 
+    int32_t i;
     #pragma omp parallel for
-    for (int i = 0; i < m; i++) {
+    for (i = 0; i < m; i++) {
         RINDOW_MATLIB_GET_TOP_K(float, FloatIndexPair, temp_array, i, a, ldA, n, k, top_values, top_indices, compare_float);
     }
 
@@ -77,9 +78,10 @@ void rindow_matlib_s_top_k(
     if (sorted) {
         FloatIndexPair *temp_sorted_array = (FloatIndexPair *)malloc(k * sizeof(FloatIndexPair));
        
+        int32_t j;
         #pragma omp parallel for
-        for (int i = 0; i < m; i++) {
-            RINDOW_MATLIB_SORT_TOP_K(float, FloatIndexPair, temp_sorted_array, i, k, top_values, top_indices, compare_float);
+        for (j = 0; j < m; j++) {
+            RINDOW_MATLIB_SORT_TOP_K(float, FloatIndexPair, temp_sorted_array, j, k, top_values, top_indices, compare_float);
         }
 
         free(temp_sorted_array);
@@ -99,8 +101,9 @@ void rindow_matlib_d_top_k(
 {
     DoubleIndexPair *temp_array = (DoubleIndexPair *)malloc(n * sizeof(DoubleIndexPair));
    
+    int32_t i;
     #pragma omp parallel for
-    for (int i = 0; i < m; i++) {
+    for (i = 0; i < m; i++) {
         RINDOW_MATLIB_GET_TOP_K(double, DoubleIndexPair, temp_array, i, a, ldA, n, k, top_values, top_indices, compare_double);
     }
 
@@ -110,9 +113,10 @@ void rindow_matlib_d_top_k(
     if (sorted) {
         DoubleIndexPair *temp_sorted_array = (DoubleIndexPair *)malloc(k * sizeof(DoubleIndexPair));
         
+        int32_t j;
         #pragma omp parallel for
-        for (int i = 0; i < m; i++) {
-            RINDOW_MATLIB_SORT_TOP_K(double, DoubleIndexPair, temp_array, i, k, top_values, top_indices, compare_double);
+        for (j = 0; j < m; j++) {
+            RINDOW_MATLIB_SORT_TOP_K(double, DoubleIndexPair, temp_array, j, k, top_values, top_indices, compare_double);
         }
 
         free(temp_sorted_array);
