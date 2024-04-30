@@ -16,20 +16,6 @@
         top_indices[i * k + j] = temp[j].index; \
     }
 
-#define RINDOW_MATLIB_SORT_TOP_K(data_type, pair_type, temp, i, k, top_values, top_indices, compare_func) \
-    /* Initialize temp with top K values and indices */ \
-    for (int j = 0; j < k; j++) { \
-        temp[j].value = top_values[i * k + j]; \
-        temp[j].index = top_indices[i * k + j]; \
-    } \
-    /* Sort temp array based on values in descending order */ \
-    qsort(temp, k, sizeof(pair_type), compare_func); \
-    /* Copy back the sorted values and indices */ \
-    for (int j = 0; j < k; j++) { \
-        top_values[i * k + j] = temp[j].value; \
-        top_indices[i * k + j] = temp[j].index; \
-    }
-
 typedef struct {
     float value;
     int32_t index;
@@ -59,7 +45,6 @@ void rindow_matlib_s_top_k(
     float *a, // Input data (array of vectors)
     int32_t ldA, // Leading dimension of the input (usually equal to n)
     int32_t k, // Number of top elements to find
-    int32_t sorted, // Whether to return sorted values and indices
     float *top_values, // Output array for the top K values
     int32_t *top_indices // Output array for the indices of the top K values
 )
@@ -73,19 +58,6 @@ void rindow_matlib_s_top_k(
     }
 
     free(temp_array);
-
-    // If sorting is required, sort the top K using RINDOW_MATLIB_SORT_TOP_K macro
-    if (sorted) {
-        FloatIndexPair *temp_sorted_array = (FloatIndexPair *)malloc(k * sizeof(FloatIndexPair));
-       
-        int32_t j;
-        #pragma omp parallel for
-        for (j = 0; j < m; j++) {
-            RINDOW_MATLIB_SORT_TOP_K(float, FloatIndexPair, temp_sorted_array, j, k, top_values, top_indices, compare_float);
-        }
-
-        free(temp_sorted_array);
-    }
 }
 
 void rindow_matlib_d_top_k(
@@ -94,7 +66,6 @@ void rindow_matlib_d_top_k(
     double *a, // Input data (array of vectors)
     int32_t ldA, // Leading dimension of the input (usually equal to n)
     int32_t k, // Number of top elements to find
-    int32_t sorted, // Whether to return sorted values and indices
     double *top_values, // Output array for the top K values
     int32_t *top_indices // Output array for the indices of the top K values
 )
@@ -108,19 +79,6 @@ void rindow_matlib_d_top_k(
     }
 
     free(temp_array);
-
-    // If sorting is required, sort the top K using RINDOW_MATLIB_SORT_TOP_K macro
-    if (sorted) {
-        DoubleIndexPair *temp_sorted_array = (DoubleIndexPair *)malloc(k * sizeof(DoubleIndexPair));
-        
-        int32_t j;
-        #pragma omp parallel for
-        for (j = 0; j < m; j++) {
-            RINDOW_MATLIB_SORT_TOP_K(double, DoubleIndexPair, temp_sorted_array, j, k, top_values, top_indices, compare_double);
-        }
-
-        free(temp_sorted_array);
-    }
 }
 
 
