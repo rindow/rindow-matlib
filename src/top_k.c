@@ -2,20 +2,6 @@
 #include <math.h>
 #include "common.h"
 
-#define RINDOW_MATLIB_GET_TOP_K(data_type, pair_type, temp, i, a, ldA, n, k, top_values, top_indices, compare_func) \
-    /* Initialize temp with all elements and their indices */ \
-    for (int j = 0; j < n; j++) { \
-        temp[j].value = a[i * ldA + j]; \
-        temp[j].index = j; \
-    } \
-    /* Sort temp array based on values in descending order */ \
-    qsort(temp, n, sizeof(pair_type), compare_func); \
-    /* Select the top K items */ \
-    for (int j = 0; j < k; j++) { \
-        top_values[i * k + j] = temp[j].value; \
-        top_indices[i * k + j] = temp[j].index; \
-    }
-
 typedef struct {
     float value;
     int32_t index;
@@ -26,17 +12,63 @@ typedef struct {
     int32_t index;
 } DoubleIndexPair;
 
-static int compare_float(const void *a, const void *b) {
-    const FloatIndexPair *pairA = (const FloatIndexPair *)a;
-    const FloatIndexPair *pairB = (const FloatIndexPair *)b;
-    return (pairB->value > pairA->value) - (pairB->value < pairA->value);
-}
+#define RINDOW_MATLIB_MIN_HEAPIFY(pair_type, heap, heap_size, i) \
+    int smallest = i; \
+    int left = 2 * i + 1; \
+    int right = 2 * i + 2; \
+    while (left < heap_size) { \
+        if (right < heap_size && heap[right].value < heap[left].value) { \
+            smallest = right; \
+        } else { \
+            smallest = left; \
+        } \
+        if (heap[smallest].value >= heap[i].value) { \
+            break; \
+        } \
+        pair_type temp = heap[i]; \
+        heap[i] = heap[smallest]; \
+        heap[smallest] = temp; \
+        i = smallest; \
+        left = 2 * i + 1; \
+        right = 2 * i + 2; \
+    }
 
-static int compare_double(const void *a, const void *b) {
-    const DoubleIndexPair *pairA = (const DoubleIndexPair *)a;
-    const DoubleIndexPair *pairB = (const DoubleIndexPair *)b;
-    return (pairB->value > pairA->value) - (pairB->value < pairA->value);
-}
+#define RINDOW_MATLIB_GET_TOP_K_TEMPLATE(data_type, pair_type, temp, i, a, ldA, n, k, top_values, top_indices) \
+    /* Initialize temp with first k elements */ \
+    for (int j = 0; j < k; j++) { \
+        temp[j].value = a[i * ldA + j]; \
+        temp[j].index = j; \
+    } \
+    /* Build min-heap */ \
+    for (int j = k / 2 - 1; j >= 0; j--) { \
+        RINDOW_MATLIB_MIN_HEAPIFY(pair_type, temp, k, j); \
+    } \
+    /* Iterate through the rest of the elements in the row */ \
+    for (int j = k; j < n; j++) { \
+        data_type current_value = a[i * ldA + j]; \
+        if (current_value > temp[0].value) { \
+            temp[0].value = current_value; \
+            temp[0].index = j; \
+            int32_t idx = 0; \
+            RINDOW_MATLIB_MIN_HEAPIFY(pair_type, temp, k, idx); \
+        } \
+    } \
+    if(sorted) { \
+        /* sort */ \
+        for (int j = k - 1; j > 0; j--) { \
+            /* swap */ \
+            pair_type temp_pair = temp[j]; \
+            temp[j] = temp[0]; \
+            temp[0] = temp_pair; \
+            int32_t idx = 0; \
+            RINDOW_MATLIB_MIN_HEAPIFY(pair_type, temp, j, idx); \
+        } \
+    } \
+    /* Extract top K values and indices from the heap */ \
+    for (int j = 0; j < k; j++) { \
+        top_values[i * k + j] = temp[j].value; \
+        top_indices[i * k + j] = temp[j].index; \
+    }
 
 
 void rindow_matlib_s_top_k(
@@ -45,19 +77,20 @@ void rindow_matlib_s_top_k(
     float *a, // Input data (array of vectors)
     int32_t ldA, // Leading dimension of the input (usually equal to n)
     int32_t k, // Number of top elements to find
+    int32_t sorted, // Whether to return sorted values and indices
     float *top_values, // Output array for the top K values
     int32_t *top_indices // Output array for the indices of the top K values
 )
 {
-    FloatIndexPair *temp_array = (FloatIndexPair *)malloc(n * sizeof(FloatIndexPair));
+    FloatIndexPair *heap = (FloatIndexPair *)malloc(k * sizeof(FloatIndexPair));
 
     int32_t i;
     #pragma omp parallel for
     for (i = 0; i < m; i++) {
-        RINDOW_MATLIB_GET_TOP_K(float, FloatIndexPair, temp_array, i, a, ldA, n, k, top_values, top_indices, compare_float);
+        RINDOW_MATLIB_GET_TOP_K_TEMPLATE(float, FloatIndexPair, heap, i, a, ldA, n, k, top_values, top_indices);
     }
 
-    free(temp_array);
+    free(heap);
 }
 
 void rindow_matlib_d_top_k(
@@ -66,19 +99,18 @@ void rindow_matlib_d_top_k(
     double *a, // Input data (array of vectors)
     int32_t ldA, // Leading dimension of the input (usually equal to n)
     int32_t k, // Number of top elements to find
+    int32_t sorted, // Whether to return sorted values and indices
     double *top_values, // Output array for the top K values
     int32_t *top_indices // Output array for the indices of the top K values
 )
 {
-    DoubleIndexPair *temp_array = (DoubleIndexPair *)malloc(n * sizeof(DoubleIndexPair));
-   
+    DoubleIndexPair *heap = (DoubleIndexPair *)malloc(k * sizeof(DoubleIndexPair));
+
     int32_t i;
     #pragma omp parallel for
     for (i = 0; i < m; i++) {
-        RINDOW_MATLIB_GET_TOP_K(double, DoubleIndexPair, temp_array, i, a, ldA, n, k, top_values, top_indices, compare_double);
+        RINDOW_MATLIB_GET_TOP_K_TEMPLATE(double, DoubleIndexPair, heap, i, a, ldA, n, k, top_values, top_indices);
     }
 
-    free(temp_array);
+    free(heap);
 }
-
-
