@@ -26,15 +26,8 @@ int32_t rindow_matlib_s_onehot(
             return -1;
         }
         alloc_flag = 1;
-        int32_t i;
-        #pragma omp parallel for
-        for(i=0;i<m;i++) {
-            int64_t value;
-            if(rindow_matlib_common_get_integer(dtype, x, incX, i, &value)) {
-                errorCode = -1;
-            }
-            indexes[i] = (RINDOW_MATLIB_ONEHOT_INDEX_TYPE)value;
-        }
+        errorCode = rindow_matlib_astype(m,dtype,x,incX,
+            RINDOW_MATLIB_ONEHOT_INDEX_DTYPE,indexes,1);
         if(errorCode) {
             free(indexes);
             return errorCode;
@@ -78,15 +71,8 @@ int32_t rindow_matlib_d_onehot(
             return -1;
         }
         alloc_flag = 1;
-        int32_t i;
-        #pragma omp parallel for
-        for(i=0;i<m;i++) {
-            int64_t value;
-            if(rindow_matlib_common_get_integer(dtype, x, incX, i, &value)) {
-                errorCode = -1;
-            }
-            indexes[i] = (RINDOW_MATLIB_ONEHOT_INDEX_TYPE)value;
-        }
+        errorCode = rindow_matlib_astype(m,dtype,x,incX,
+            RINDOW_MATLIB_ONEHOT_INDEX_DTYPE,indexes,1);
         if(errorCode) {
             free(indexes);
             return errorCode;

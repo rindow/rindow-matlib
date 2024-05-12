@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+if(APPLE)
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/opt/local/share/cmake")
+endif()
 
 find_package(Threads REQUIRED)
 
@@ -15,7 +18,7 @@ configure_file(
   "${CMAKE_CURRENT_BINARY_DIR}/rindow_matlib_config.h"
 )
 
-file(GLOB_RECURSE srcfiles RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ./*.c)
+file(GLOB_RECURSE srcfiles RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ./*.c ./*.cpp)
 
 add_library(rindowmatlib SHARED ${srcfiles})
 target_compile_options(rindowmatlib PRIVATE -DRINDOW_COMPILING_DLL)
@@ -35,7 +38,7 @@ endif()
 
 target_include_directories(rindowmatlib PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_include_directories(rindowmatlib PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
-
+    
 
 if (MSVC)
     install(
@@ -45,7 +48,12 @@ if (MSVC)
     )
     install(
         TARGETS rindowmatlib
-        ARCHIVE DESTINATION lib
+        ARCHIVE DESTINATION lib/import
+        COMPONENT ${PROJECT_NAME}
+    )
+elseif(APPLE)
+    install(
+        TARGETS rindowmatlib
         COMPONENT ${PROJECT_NAME}
     )
 elseif(UNIX)

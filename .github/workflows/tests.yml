@@ -1,24 +1,92 @@
 name: tests
 
+permissions:
+  contents: write
+
 on: 
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
+  release:
+    types:
+      - published
 
 jobs:
-  build_and_tests:
-    runs-on: ubuntu-22.04
+  build_tests:
+    name: build
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: true
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+            artifact_name: win64
+          - name: Linux
+            os: ubuntu-latest
+            artifact_name: linux
+          - name: macOS-x86_64
+            os: macos-13
+            artifact_name: macos-x86_64
+          - name: macOS-arm64
+            os: macos-latest
+            artifact_name: macos-arm64
   
     steps:
       - name: Checkout codes
         uses: "actions/checkout@v4"
 
+      - name: Install dependencies (macOS)
+        if: ${{ startsWith(matrix.os, 'macos-') }}
+        run: |
+          brew install libomp
+
       - name: Build
-        run: cmake -S . -B build && cmake --build build --config Release
+        if: ${{ startsWith(matrix.os, 'ubuntu-') ||  startsWith(matrix.os, 'windows-') }}
+        run: |
+          cmake -S . -B build && cmake --build build --config Release
+
+      - name: Build (macOS)
+        if: ${{ startsWith(matrix.os, 'macos-') }}
+        run: |
+          export OpenMP_ROOT=$(brew --prefix)/opt/libomp
+          cmake -S . -B build && cmake --build build --config Release
 
       - name: GoogleTest Tests
-        run: cd build && ctest
+        run: |
+          cd build
+          ctest -C Release
+
+      - name: Packaging
+        run: |
+          cd build
+          cpack -C Release
+
+      - name: Archive production artifacts
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-${{ matrix.artifact_name }}
+          path: packages/*
+
+  release:
+    needs: [ build_tests ]    
+    name: release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: packages
+        pattern: package-*
+        merge-multiple: true
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          packages/*
 
