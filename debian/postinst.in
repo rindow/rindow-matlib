@@ -9,6 +9,9 @@ update-alternatives --install %INSTALL_DIR%/lib/librindowmatlib.so \
                     librindowmatlib.so \
                     %INSTALL_DIR%/lib/rindowmatlib-openmp/librindowmatlib.so 95
 
+update-alternatives --install %INSTALL_DIR%/lib/librindowmatlib.so \
+                    librindowmatlib.so \
+                    %INSTALL_DIR%/lib/rindowmatlib-thread/librindowmatlib.so 100
 
 
 exit 0

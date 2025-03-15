@@ -4,9 +4,9 @@ Rindow Math Matrix is the fundamental package for scientific matrix operation
 
 - A powerful N-dimensional array object
 - Sophisticated (broadcasting) functions
-- A high-speed calculation library written in C.
+- A high-speed calculation library written in C/C++.
 - Useful linear algebra and random number capabilities
-- Parallel calculation with OpenMP
+- Parallel calculation with native multi-threading or OpenMP
 
 You can call a high-speed calculation library written in C language to speed up matrix calculation processing.
 Rindow Matlib includes many matrix operations functions used in machine learning.
@@ -17,7 +17,7 @@ on [Rindow Mathematics](https://rindow.github.io/mathematics/openblas/mathlibrar
 Requirements
 ============
 
-- Windows 10/11 , Linux(Ubuntu 20.04, Debian 12), MacOS or later
+- Windows(10/11) , Linux(Ubuntu 22.04-, Debian 12-), MacOS(13/14) or later
 
 How to setup pre-build binaries
 ===============================
@@ -29,6 +29,8 @@ Download the pre-build binary file.
 - https://github.com/rindow/rindow-matlib/releases
 
 Unzip the file for Windows and copy rindowmatlib.dll to the directory set in PATH.
+
+The standard DLLs in the Bin directory is the thread version. Subdirectories contain OpenMP and Serial versions.
 
 ```shell
 C> PATH %PATH%;C:\path\to\bin
@@ -46,15 +48,16 @@ $ sudo apt install ./rindow-matlib_X.X.X_amd64.deb
 ```
 
 ### Troubleshooting for Linux
-Since rindow-matlib currently uses OpenMP, choose the OpenMP version for OpenBLAS as well.
+Since rindow-matlib currently uses ptheads, so you should choose the pthread version for OpenBLAS as well.
+In version 1.0 of Rindow-matlib we recommended the OpenMP version, but now we have changed our policy and are recommending the pthread version.
 
-Using the pthread version of OpenBLAS can cause conflicts and become unstable and slow.
+Using the OpenMP version of OpenBLAS can cause conflicts and become unstable and slow.
 This issue does not occur on Windows.
 
-If you have already installed the pthread version of OpenBLAS,
+If you have already installed the OpenMP version of OpenBLAS, you can delete it and install pthread version.
 ```shell
-$ sudo apt install libopenblas0-openmp liblapacke
-$ sudo apt remove libopenblas0-pthread
+$ sudo apt install libopenblas0-pthread liblapacke
+$ sudo apt remove libopenblas0-openmp
 ```
 
 But if you can't remove it, you can switch to it using the update-alternatives command.
@@ -64,9 +67,7 @@ $ sudo update-alternatives --config libopenblas.so.0-x86_64-linux-gnu
 $ sudo update-alternatives --config liblapack.so.3-x86_64-linux-gnu
 ```
 
-If you really want to use the pthread version of OpenBLAS, please switch to the serial version of rindow-matlib.
-
-There are no operational mode conflicts with OpenBLAS on Windows.
+If you really want to use the OpenMP version of OpenBLAS, please switch to the serial version of rindow-matlib.
 
 But, If you really want to use the pthread version of OpenBLAS, please switch to the serial version of rindow-matlib.
 
@@ -79,6 +80,7 @@ There are 2 choices for the alternative librindowmatlib.so (providing /usr/lib/l
 * 0            /usr/lib/rindowmatlib-openmp/librindowmatlib.so   95        auto mode
   1            /usr/lib/rindowmatlib-openmp/librindowmatlib.so   95        manual mode
   2            /usr/lib/rindowmatlib-serial/librindowmatlib.so   90        manual mode
+  3            /usr/lib/rindowmatlib-thread/librindowmatlib.so   100       manual mode
 
 Press <enter> to keep the current choice[*], or type selection number: 2
 ```
@@ -150,6 +152,7 @@ Download source code from release and extract
 Build with cmake.
 
 ```shell
+$ sudo apt install build-essential cmake
 $ cd \path\to\here
 $ cmake -S . -B build
 $ cmake --build build --config Release

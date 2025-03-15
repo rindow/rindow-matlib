@@ -1,0 +1,11 @@
+#ifndef RINDOW_MATLIB_CONFIG_H_
+#define RINDOW_MATLIB_CONFIG_H_
+
+extern "C" {
+
+#cmakedefine RINDOW_MATLIB_VERSION "@RINDOW_MATLIB_VERSION@"
+
+}
+
+// RINDOW_MATLIB_CONFIG_H_
+#endif

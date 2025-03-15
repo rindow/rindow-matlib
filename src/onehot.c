@@ -42,7 +42,7 @@ int32_t rindow_matlib_s_onehot(
         if(selector>=0 && selector<n) {
             a[i*ldA+selector] += alpha;
         } else {
-            errorCode = -1;
+            errorCode = RINDOW_MATLIB_E_PERM_OUT_OF_RANGE;
         }
     }
 
@@ -87,7 +87,7 @@ int32_t rindow_matlib_d_onehot(
         if(selector>=0 && selector<n) {
             a[i*ldA+selector] += alpha;
         } else {
-            errorCode = -1;
+            errorCode = RINDOW_MATLIB_E_PERM_OUT_OF_RANGE;
         }
     }
 

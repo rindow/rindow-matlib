@@ -97,6 +97,8 @@ int32_t rindow_matlib_s_transpose(
 
     if(ndim<=0) {
         memcpy(b,a,repeat*sizeof(float));
+        free(strides);
+        free(targetStrides);
         return RINDOW_MATLIB_SUCCESS;
     }
 
@@ -201,6 +203,8 @@ int32_t rindow_matlib_d_transpose(
 
     if(ndim<=0) {
         memcpy(b,a,repeat*sizeof(double));
+        free(strides);
+        free(targetStrides);
         return RINDOW_MATLIB_SUCCESS;
     }
 
@@ -296,6 +300,8 @@ int32_t rindow_matlib_i_transpose(
 
     if(ndim<=0) {
         memcpy(b,a,repeat*value_bytes);
+        free(strides);
+        free(targetStrides);
         return RINDOW_MATLIB_SUCCESS;
     }
 

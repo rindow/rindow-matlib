@@ -2,12 +2,34 @@
 #ifdef _MSC_VER
 #define _CRT_RAND_S
 #include <stdlib.h>
+#else
+#include <unistd.h>
 #endif
+#include <stdarg.h>
 #include "rindow/matlib.h"
 #include "common.h"
 //#ifdef HAVE_PTHREAD
 //#include <pthread.h>
 //#endif
+#include <stdio.h>
+#include <string.h>
+
+void rindow_matlib_common_console(const char *format, ...)
+{
+    char buffer[512];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+    size_t len = strnlen(buffer,sizeof(buffer));
+
+#ifdef _MSC_VER
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    WriteConsole(hStdOut, buffer, (DWORD)len, NULL, NULL);
+#else
+    write(STDOUT_FILENO, buffer, len);
+#endif
+}
 
 int32_t rindow_matlib_common_get_nprocs(void)
 {

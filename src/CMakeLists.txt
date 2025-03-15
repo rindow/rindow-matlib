@@ -20,46 +20,50 @@ configure_file(
 
 file(GLOB_RECURSE srcfiles RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ./*.c ./*.cpp)
 
-add_library(rindowmatlib SHARED ${srcfiles})
-target_compile_options(rindowmatlib PRIVATE -DRINDOW_COMPILING_DLL)
+add_library(rindowmatlib.openmp SHARED ${srcfiles})
+set_target_properties(rindowmatlib.openmp PROPERTIES OUTPUT_NAME rindowmatlib)
+target_compile_options(rindowmatlib.openmp PRIVATE -DRINDOW_COMPILING_DLL)
 if (MSVC)
-    target_compile_options(rindowmatlib PRIVATE /openmp:experimental)
+    target_compile_options(rindowmatlib.openmp PRIVATE /openmp:experimental)
 elseif(APPLE)
     find_package(OpenMP REQUIRED)
     if(OpenMP_FOUND)
-        target_link_libraries(rindowmatlib PRIVATE OpenMP::OpenMP_C)
+        target_link_libraries(rindowmatlib.openmp PRIVATE OpenMP::OpenMP_C)
     endif()
 elseif(UNIX)
     find_package(OpenMP REQUIRED)
     if(OpenMP_FOUND)
-        target_link_libraries(rindowmatlib PRIVATE OpenMP::OpenMP_C)
+        target_link_libraries(rindowmatlib.openmp PRIVATE OpenMP::OpenMP_C)
     endif()
 endif()
 
-target_include_directories(rindowmatlib PUBLIC "${PROJECT_SOURCE_DIR}/include")
-target_include_directories(rindowmatlib PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(rindowmatlib.openmp PUBLIC "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(rindowmatlib.openmp PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
     
 
 if (MSVC)
     install(
-        TARGETS rindowmatlib
-        RUNTIME DESTINATION bin
+        TARGETS rindowmatlib.openmp
+        RUNTIME DESTINATION bin/openmp
         COMPONENT ${PROJECT_NAME}
     )
     install(
-        TARGETS rindowmatlib
-        ARCHIVE DESTINATION lib/import
+        TARGETS rindowmatlib.openmp
+        ARCHIVE DESTINATION lib/import/openmp
         COMPONENT ${PROJECT_NAME}
     )
 elseif(APPLE)
     install(
-        TARGETS rindowmatlib
+        TARGETS rindowmatlib.openmp
+        DESTINATION lib/openmp
+        RENAME rindowmatlib.dylib
         COMPONENT ${PROJECT_NAME}
     )
 elseif(UNIX)
     install(
-        TARGETS rindowmatlib
+        TARGETS rindowmatlib.openmp
         DESTINATION lib/rindowmatlib-openmp
+        RENAME rindowmatlib.so
         COMPONENT ${PROJECT_NAME}
     )
 endif()

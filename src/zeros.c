@@ -13,15 +13,19 @@ void rindow_matlib_s_zeros(int32_t n, float *x, int32_t incX)
     if(incX==1) {
         int32_t valueSize = sizeof(float);
         int32_t num_threads = rindow_matlib_common_get_num_threads();
-        int32_t fillsize = n/num_threads;
+        int32_t cell_size = n / num_threads;
+        int32_t remainder = n - cell_size * num_threads;
+
         int32_t i;
         #pragma omp parallel for
         for(i=0;i<num_threads;i++) {
-            memset(&(x[i*fillsize]),0,fillsize*valueSize);
-        }
-        int32_t adiv = n%num_threads;
-        if(adiv!=0) {
-            memset(&(x[num_threads*fillsize]),0,adiv*valueSize);
+            int32_t fillsize;
+            if(i == num_threads - 1) {
+                fillsize = cell_size + remainder;
+            } else {
+                fillsize = cell_size;
+            }
+            memset(&(x[i*cell_size]),0,fillsize*valueSize);
         }
     } else {
         int32_t i;
@@ -35,15 +39,19 @@ void rindow_matlib_d_zeros(int32_t n, double *x, int32_t incX)
     if(incX==1) {
         int32_t valueSize = sizeof(double);
         int32_t num_threads = rindow_matlib_common_get_num_threads();
-        int32_t fillsize = n/num_threads;
+        int32_t cell_size = n / num_threads;
+        int32_t remainder = n - cell_size * num_threads;
+
         int32_t i;
         #pragma omp parallel for
         for(i=0;i<num_threads;i++) {
-            memset(&(x[i*fillsize]),0,fillsize*valueSize);
-        }
-        int32_t adiv = n%num_threads;
-        if(adiv!=0) {
-            memset(&(x[num_threads*fillsize]),0,adiv*valueSize);
+            int32_t fillsize;
+            if(i == num_threads - 1) {
+                fillsize = cell_size + remainder;
+            } else {
+                fillsize = cell_size;
+            }
+            memset(&(x[i*cell_size]),0,fillsize*valueSize);
         }
     } else {
         int32_t i;
@@ -60,15 +68,19 @@ void rindow_matlib_i_zeros(int32_t dtype, int32_t n,void *x, int32_t incX)
     }
     if(incX==1) {
         int32_t num_threads = rindow_matlib_common_get_num_threads();
-        int32_t fillsize = n/num_threads;
+        int32_t cell_size = n / num_threads;
+        int32_t remainder = n - cell_size * num_threads;
+
         int32_t i;
         #pragma omp parallel for
         for(i=0;i<num_threads;i++) {
-            memset(&(((char *)x)[i*fillsize*valueSize]),0,fillsize*valueSize);
-        }
-        int32_t adiv = n%num_threads;
-        if(adiv!=0) {
-            memset(&(((char *)x)[num_threads*fillsize*valueSize]),0,adiv*valueSize);
+            int32_t fillsize;
+            if(i == num_threads - 1) {
+                fillsize = cell_size + remainder;
+            } else {
+                fillsize = cell_size;
+            }
+            memset(&(((char *)x)[i*cell_size*valueSize]),0,fillsize*valueSize);
         }
     } else {
         int32_t i;

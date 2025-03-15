@@ -204,6 +204,7 @@ class OpenBLASClientGenerator
         switch ($type) {
             case 'cblas':
                 $header .= "#include <cblas.h>\n";
+                $header .= "#include \"vclib.h\"\n";
                 break;
             case 'lapacke':
                 $header .= "#if _MSC_VER\n";
@@ -212,6 +213,7 @@ class OpenBLASClientGenerator
                 $header .= "#define lapack_complex_double _Dcomplex\n";
                 $header .= "#endif\n";
                 $header .= "#include <lapacke.h>\n";
+                $header .= "#include \"vclib.h\"\n";
                 break;
             case 'matlib':
                 $header .= "#include <rindow/matlib.h>\n";

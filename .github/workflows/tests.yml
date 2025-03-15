@@ -24,8 +24,11 @@ jobs:
             os: windows-latest
             artifact_name: win64
           - name: Linux
-            os: ubuntu-latest
+            os: ubuntu-24.04
             artifact_name: linux
+          - name: Ubuntu-22.04
+            os: ubuntu-22.04
+            artifact_name: ubuntu-2204
           - name: macOS-x86_64
             os: macos-13
             artifact_name: macos-x86_64
@@ -56,7 +59,7 @@ jobs:
       - name: GoogleTest Tests
         run: |
           cd build
-          ctest -C Release
+          ctest -V -C Release
 
       - name: Packaging
         run: |

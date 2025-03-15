@@ -1,6 +1,5 @@
 #include "rindow/matlib.h"
 #include "common.h"
-#include <stdio.h>
 
 #define RINDOW_MATLIB_ADD_TEMPLATE(alpha,x,j,incX,a,i,incAi,incAj) \
     a[i*incAi+j*incAj] += (alpha*x[j*incX]);
