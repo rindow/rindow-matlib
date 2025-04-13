@@ -47,6 +47,29 @@ Please install using the apt command.
 $ sudo apt install ./rindow-matlib_X.X.X_amd64.deb
 ```
 
+### How to setup for macOS
+
+Download the pre-build binary file.
+
+- https://github.com/rindow/rindow-matlib/releases
+
+Extract the tar.gz file to the tmp directory and navigate to the directory.
+
+```shell
+$ tar -xzf rindow-matlib-X.X.X-Darwin-XXX.tar.gz -C /tmp
+$ cd /tmp/rindow-matlib-X.X.X-Darwin-XXX
+```
+
+The standard dylib in the Lib directory is the thread version. Subdirectories contain OpenMP and Serial versions.
+
+Next, copy the include and lib directories to /usr/local.
+
+```shell
+$ sudo cp -r usr/include /usr/local/
+$ sudo cp -r usr/lib /usr/local/
+```
+If you want to use OpenMP Please type `brew install libomp`
+
 ### Troubleshooting for Linux
 Since rindow-matlib currently uses ptheads, so you should choose the pthread version for OpenBLAS as well.
 In version 1.0 of Rindow-matlib we recommended the OpenMP version, but now we have changed our policy and are recommending the pthread version.
@@ -67,45 +90,22 @@ $ sudo update-alternatives --config libopenblas.so.0-x86_64-linux-gnu
 $ sudo update-alternatives --config liblapack.so.3-x86_64-linux-gnu
 ```
 
-If you really want to use the OpenMP version of OpenBLAS, please switch to the serial version of rindow-matlib.
-
-But, If you really want to use the pthread version of OpenBLAS, please switch to the serial version of rindow-matlib.
+But, If you really want to use the OpenMP version of OpenBLAS, please switch to the OpenMP version of rindow-matlib.
 
 ```shell
 $ sudo update-alternatives --config librindowmatlib.so
-There are 2 choices for the alternative librindowmatlib.so (providing /usr/lib/librindowmatlib.so).
+There are 1 choices for the alternative librindowmatlib.so (providing /usr/lib/librindowmatlib.so).
 
   Selection    Path                                             Priority   Status
 ------------------------------------------------------------
-* 0            /usr/lib/rindowmatlib-openmp/librindowmatlib.so   95        auto mode
+* 0            /usr/lib/rindowmatlib-thread/librindowmatlib.so   100       auto mode
   1            /usr/lib/rindowmatlib-openmp/librindowmatlib.so   95        manual mode
   2            /usr/lib/rindowmatlib-serial/librindowmatlib.so   90        manual mode
   3            /usr/lib/rindowmatlib-thread/librindowmatlib.so   100       manual mode
 
-Press <enter> to keep the current choice[*], or type selection number: 2
+Press <enter> to keep the current choice[*], or type selection number: 1
 ```
 Choose the "rindowmatlib-serial".
-
-### How to setup for MacOS
-
-Download the pre-build binary file.
-
-- https://github.com/rindow/rindow-matlib/releases
-
-Extract the tar.gz file to the tmp directory and navigate to the directory.
-
-```shell
-$ tar -xzf rindow-matlib-X.X.X-Darwin.tar.gz -C /tmp
-$ cd /tmp/rindow-matlib-X.X.X-Darwin
-```
-
-Next, copy the include and lib directories to /usr/local.
-
-```shell
-$ sudo cp -r usr/include /usr/local/
-$ sudo cp -r usr/lib /usr/local/
-$ brew install libomp
-```
 
 How to build from source code on Windows
 ========================================

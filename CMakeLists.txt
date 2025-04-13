@@ -6,10 +6,10 @@ cmake_minimum_required(VERSION 3.14)
 #endif()
 enable_testing()
 
-project(rindow-matlib VERSION 1.1.0 LANGUAGES CXX C)
+project(rindow-matlib VERSION 1.1.1 LANGUAGES CXX C)
 #set(PROJECT_VERSION_MAJOR 1)
 #set(PROJECT_VERSION_MINOR 1)
-#set(PROJECT_VERSION_PATCH 0)
+#set(PROJECT_VERSION_PATCH 1)
 
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 14)
